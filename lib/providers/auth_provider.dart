@@ -8,19 +8,24 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
 class AuthState {
   final User? user;
   final String? errorMessage;
+  final bool isAnonymous;
   
-  AuthState({this.user, this.errorMessage});
+  AuthState({this.user, this.errorMessage, this.isAnonymous = true});
   
-  AuthState copyWith({User? user, String? errorMessage}) {
+  AuthState copyWith({User? user, String? errorMessage, bool? isAnonymous}) {
     return AuthState(
       user: user ?? this.user,
       errorMessage: errorMessage ?? this.errorMessage,
+      isAnonymous: isAnonymous ?? this.isAnonymous,
     );
   }
 }
 
 class AuthNotifier extends StateNotifier<AuthState> {
-  AuthNotifier() : super(AuthState());
+  AuthNotifier() : super(AuthState()) {
+    // Verificar sessão ao inicializar
+    checkSession();
+  }
   
   // Obter o cliente Supabase
   final supabase = Supabase.instance.client;
@@ -29,7 +34,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> checkSession() async {
     final session = supabase.auth.currentSession;
     if (session != null) {
-      state = AuthState(user: session.user);
+      state = AuthState(user: session.user, isAnonymous: false);
+    } else {
+      state = AuthState(isAnonymous: true);
     }
   }
 
@@ -42,12 +49,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       
       if (response.session != null) {
-        state = AuthState(user: response.user);
+        state = AuthState(user: response.user, isAnonymous: false);
       } else {
-        state = AuthState(errorMessage: "Falha ao fazer login");
+        state = AuthState(errorMessage: "Falha ao fazer login", isAnonymous: true);
       }
     } catch (e) {
-      state = AuthState(errorMessage: "Erro: ${e.toString()}");
+      state = AuthState(errorMessage: "Erro: ${e.toString()}", isAnonymous: true);
     }
   }
 
@@ -63,18 +70,18 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       
       if (response.session != null) {
-        state = AuthState(user: response.user);
+        state = AuthState(user: response.user, isAnonymous: false);
       } else {
-        state = AuthState(errorMessage: "Falha ao criar conta");
+        state = AuthState(errorMessage: "Falha ao criar conta", isAnonymous: true);
       }
     } catch (e) {
-      state = AuthState(errorMessage: "Erro: ${e.toString()}");
+      state = AuthState(errorMessage: "Erro: ${e.toString()}", isAnonymous: true);
     }
   }
 
   // Logout
   Future<void> signOut() async {
     await supabase.auth.signOut();
-    state = AuthState();
+    state = AuthState(isAnonymous: true);
   }
 }
