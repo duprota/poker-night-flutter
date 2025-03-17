@@ -6,8 +6,8 @@ class SupabaseConstants {
   // TODO: Replace with your actual Supabase URL and anon key
   // You'll need to create a Supabase project at https://supabase.com
   // and replace these placeholder values with your project's credentials
-  static const String supabaseUrl = 'https://your-project-url.supabase.co';
-  static const String supabaseAnonKey = 'your-anon-key';
+  static const String supabaseUrl = 'https://qyfyyajgeytwldpqvtzd.supabase.co';
+  static const String supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5Znl5YWpnZXl0d2xkcHF2dHpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE4OTQ3OTUsImV4cCI6MjA1NzQ3MDc5NX0.JDBPY72xqzxFPMhvYAJ5wpt-2yN10vj3uDpUobOd8l8';
 
   // Supabase table names
   static const String usersTable = 'users';
