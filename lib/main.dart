@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:poker_night/core/router/app_router.dart';
 import 'package:poker_night/core/services/supabase_service.dart';
 import 'package:poker_night/core/theme/app_theme.dart';
+import 'package:poker_night/providers/auth_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
