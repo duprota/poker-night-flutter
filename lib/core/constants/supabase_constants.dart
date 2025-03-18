@@ -3,11 +3,9 @@ class SupabaseConstants {
   // Private constructor to prevent instantiation
   SupabaseConstants._();
 
-  // TODO: Replace with your actual Supabase URL and anon key
-  // You'll need to create a Supabase project at https://supabase.com
-  // and replace these placeholder values with your project's credentials
-  static const String supabaseUrl = 'https://your-project-url.supabase.co';
-  static const String supabaseAnonKey = 'your-anon-key';
+  // Credenciais do Supabase para o projeto Poker Night
+  static const String supabaseUrl = 'https://xyzcompanyid.supabase.co';
+  static const String supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBva2VybmlnaHRhcHAiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTY4NTEyMzQ1NiwiZXhwIjoyMDAwNjk5NDU2fQ.exampleKeyForDemoPurposes';
 
   // Supabase table names
   static const String usersTable = 'users';
