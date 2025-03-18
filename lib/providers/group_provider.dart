@@ -1,20 +1,40 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:poker_night/core/services/supabase_service.dart';
 import 'package:poker_night/features/groups/domain/models/index.dart';
 
-part 'group_provider.freezed.dart';
-
 /// Estado para o provider de grupos
-@freezed
-class GroupState with _$GroupState {
-  const factory GroupState({
-    @Default([]) List<Group> groups,
-    @Default([]) List<GroupInvitation> invitations,
-    @Default(false) bool isLoading,
+class GroupState extends Equatable {
+  final List<Group> groups;
+  final List<GroupInvitation> invitations;
+  final bool isLoading;
+  final String? error;
+
+  const GroupState({
+    this.groups = const [],
+    this.invitations = const [],
+    this.isLoading = false,
+    this.error,
+  });
+
+  /// Cria uma cópia do estado com os valores atualizados
+  GroupState copyWith({
+    List<Group>? groups,
+    List<GroupInvitation>? invitations,
+    bool? isLoading,
     String? error,
-  }) = _GroupState;
+  }) {
+    return GroupState(
+      groups: groups ?? this.groups,
+      invitations: invitations ?? this.invitations,
+      isLoading: isLoading ?? this.isLoading,
+      error: error,
+    );
+  }
+
+  @override
+  List<Object?> get props => [groups, invitations, isLoading, error];
 }
 
 /// Notificador para gerenciar o estado de grupos
