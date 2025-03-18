@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:poker_night/core/services/notification_service_factory.dart';
 import 'package:poker_night/core/services/notification_service_interface.dart';
+import 'package:poker_night/core/services/supabase_notification_service.dart';
 import 'package:poker_night/core/services/supabase_service.dart';
 import 'package:poker_night/models/notification.dart';
 

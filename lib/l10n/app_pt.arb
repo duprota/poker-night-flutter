@@ -80,6 +80,10 @@
   "darkThemeOption": "Escuro",
   "lightThemeOption": "Claro",
   "systemThemeOption": "Sistema",
+  "purpleThemeOption": "Roxo",
+  "blueThemeOption": "Azul",
+  "themeSelectionTitle": "Selecione o tema",
+  "themeSelectionSubtitle": "Escolha o tema que melhor se adapta ao seu estilo",
   
   "okButton": "OK",
   "yesButton": "Sim",

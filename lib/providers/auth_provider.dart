@@ -39,6 +39,9 @@ class AuthState {
   /// Verifica se o usuário está anônimo (não autenticado)
   bool get isAnonymous => user == null;
 
+  /// Verifica se o usuário está autenticado
+  bool get isAuthenticated => user != null;
+
   /// Cria uma cópia do estado com os valores especificados
   AuthState copyWith({
     User? user,

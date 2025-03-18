@@ -8,6 +8,7 @@ import 'package:poker_night/features/auth/presentation/screens/splash_screen.dar
 import 'package:poker_night/features/games/presentation/screens/game_details_screen.dart';
 import 'package:poker_night/features/games/presentation/screens/games_list_screen.dart';
 import 'package:poker_night/features/games/presentation/screens/new_game_screen.dart';
+import 'package:poker_night/features/groups/presentation/screens/index.dart';
 import 'package:poker_night/features/players/presentation/screens/player_details_screen.dart';
 import 'package:poker_night/features/players/presentation/screens/players_list_screen.dart';
 import 'package:poker_night/screens/deep_link_test_screen.dart';
@@ -16,6 +17,7 @@ import 'package:poker_night/screens/notifications_screen.dart';
 import 'package:poker_night/screens/profile_screen.dart';
 import 'package:poker_night/screens/settings/settings_screen.dart';
 import 'package:poker_night/screens/settings/language_settings_screen.dart';
+import 'package:poker_night/screens/settings/theme_settings_screen.dart';
 
 /// Provider for the app router
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -72,6 +74,26 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         },
       ),
       
+      // Groups routes
+      GoRoute(
+        path: '/groups',
+        builder: (context, state) => const GroupsScreen(),
+      ),
+      GoRoute(
+        path: '/groups/:id',
+        builder: (context, state) {
+          final groupId = state.pathParameters['id']!;
+          return GroupDetailsScreen(groupId: groupId);
+        },
+      ),
+      GoRoute(
+        path: '/groups/invitation/:token',
+        builder: (context, state) {
+          final token = state.pathParameters['token']!;
+          return GroupInvitationScreen(token: token);
+        },
+      ),
+      
       // Players routes
       GoRoute(
         path: '/players',
@@ -115,6 +137,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/settings/language',
         builder: (context, state) => const LanguageSettingsScreen(),
+      ),
+      GoRoute(
+        path: '/settings/theme',
+        builder: (context, state) => const ThemeSettingsScreen(),
       ),
     ],
     errorBuilder: (context, state) => Scaffold(

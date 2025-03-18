@@ -21,7 +21,7 @@ class NotificationServiceFactory {
         if (supabaseService == null) {
           throw ArgumentError('SupabaseService é necessário para criar um SupabaseNotificationService');
         }
-        return SupabaseNotificationService(supabaseService);
+        return SupabaseNotificationService();
       
       case NotificationServiceType.firebase:
         // Implementação futura

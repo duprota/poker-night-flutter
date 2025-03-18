@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:poker_night/core/services/supabase_service.dart';
+import 'package:poker_night/providers/auth_provider.dart';
 import 'package:poker_night/core/theme/app_theme.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -37,10 +38,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      await SupabaseService.signUpWithEmail(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-        name: _nameController.text.trim(),
+      await ref.read(authProvider.notifier).signUp(
+        _emailController.text.trim(),
+        _passwordController.text,
+        _nameController.text.trim(),
       );
       
       if (mounted) {
