@@ -10,6 +10,9 @@ import 'package:poker_night/features/games/presentation/screens/games_list_scree
 import 'package:poker_night/features/games/presentation/screens/new_game_screen.dart';
 import 'package:poker_night/features/players/presentation/screens/player_details_screen.dart';
 import 'package:poker_night/features/players/presentation/screens/players_list_screen.dart';
+import 'package:poker_night/features/groups/presentation/screens/groups_screen.dart';
+import 'package:poker_night/features/groups/presentation/screens/group_details_screen.dart';
+import 'package:poker_night/features/groups/presentation/screens/group_invitation_screen.dart';
 
 /// Provider for the app router
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -77,6 +80,23 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           final playerId = state.pathParameters['id']!;
           return PlayerDetailsScreen(playerId: playerId);
         },
+      ),
+      
+      // Groups routes
+      GoRoute(
+        path: '/groups',
+        builder: (context, state) => const GroupsScreen(),
+      ),
+      GoRoute(
+        path: '/groups/:id',
+        builder: (context, state) {
+          final groupId = state.pathParameters['id']!;
+          return GroupDetailsScreen(groupId: groupId);
+        },
+      ),
+      GoRoute(
+        path: '/group-invitations',
+        builder: (context, state) => const GroupInvitationScreen(),
       ),
     ],
     errorBuilder: (context, state) => Scaffold(

@@ -1,0 +1,113 @@
+{
+  "@@locale": "en",
+  
+  "appTitle": "Poker Night",
+  
+  "login": "Login",
+  
+  "register": "Register",
+  
+  "email": "Email",
+  
+  "password": "Password",
+  
+  "games": "Games",
+  
+  "players": "Players",
+  
+  "settings": "Settings",
+  
+  "logout": "Logout",
+  
+  "newGame": "New Game",
+  
+  "gameDetails": "Game Details",
+  
+  "playerDetails": "Player Details",
+  
+  "cancel": "Cancel",
+  
+  "save": "Save",
+  
+  "delete": "Delete",
+  
+  "edit": "Edit",
+  
+  "create": "Create",
+  
+  "tryAgain": "Try Again",
+  
+  "groupsTitle": "Groups",
+  
+  "createGroupTooltip": "Create new group",
+  
+  "errorLoadingGroups": "Error loading groups",
+  
+  "noGroups": "You are not a member of any group yet",
+  
+  "createFirstGroup": "Create my first group",
+  
+  "createGroup": "Create Group",
+  
+  "groupName": "Group name",
+  
+  "groupNameHint": "Ex: Friday Night Poker",
+  
+  "groupDescription": "Description",
+  
+  "groupDescriptionHint": "Ex: Group for our Friday night games",
+  
+  "privateGroup": "Private group",
+  
+  "privateGroupDescription": "Only invited members can join",
+  
+  "publicGroup": "Public group",
+  
+  "members": "Members",
+  
+  "activities": "Activities",
+  
+  "membersTabPlaceholder": "Group members list",
+  
+  "inviteMember": "Invite member",
+  
+  "gamesTabPlaceholder": "Group games",
+  
+  "scheduleGame": "Schedule game",
+  
+  "activitiesTabPlaceholder": "Activity history",
+  
+  "editGroup": "Edit group",
+  
+  "shareGroup": "Share group",
+  
+  "leaveGroup": "Leave group",
+  
+  "deleteGroup": "Delete group",
+  
+  "memberEmail": "Player email",
+  
+  "memberEmailHint": "Ex: player@example.com",
+  
+  "invite": "Invite",
+  
+  "leaveGroupConfirmation": "Are you sure you want to leave this group? You will need a new invitation to join again.",
+  
+  "leave": "Leave",
+  
+  "deleteGroupConfirmation": "Are you sure you want to delete this group? This action cannot be undone and all group data will be lost.",
+  
+  "groupInvitations": "Group Invitations",
+  
+  "errorLoadingInvitations": "Error loading invitations",
+  
+  "noInvitations": "You have no pending invitations",
+  
+  "invitedBy": "Invited by {name}",
+  
+  "invitationExpiresAt": "Expires on {date}",
+  
+  "decline": "Decline",
+  
+  "accept": "Accept"
+}

@@ -1,0 +1,290 @@
+{
+  "@@locale": "pt",
+  
+  "appTitle": "Poker Night",
+  "@appTitle": {
+    "description": "Título do aplicativo"
+  },
+  
+  "login": "Entrar",
+  "@login": {
+    "description": "Texto do botão de login"
+  },
+  
+  "register": "Cadastrar",
+  "@register": {
+    "description": "Texto do botão de cadastro"
+  },
+  
+  "email": "E-mail",
+  "@email": {
+    "description": "Campo de e-mail"
+  },
+  
+  "password": "Senha",
+  "@password": {
+    "description": "Campo de senha"
+  },
+  
+  "games": "Jogos",
+  "@games": {
+    "description": "Título da tela de jogos"
+  },
+  
+  "players": "Jogadores",
+  "@players": {
+    "description": "Título da tela de jogadores"
+  },
+  
+  "settings": "Configurações",
+  "@settings": {
+    "description": "Título da tela de configurações"
+  },
+  
+  "logout": "Sair",
+  "@logout": {
+    "description": "Texto do botão de logout"
+  },
+  
+  "newGame": "Novo Jogo",
+  "@newGame": {
+    "description": "Texto do botão de novo jogo"
+  },
+  
+  "gameDetails": "Detalhes do Jogo",
+  "@gameDetails": {
+    "description": "Título da tela de detalhes do jogo"
+  },
+  
+  "playerDetails": "Detalhes do Jogador",
+  "@playerDetails": {
+    "description": "Título da tela de detalhes do jogador"
+  },
+  
+  "cancel": "Cancelar",
+  "@cancel": {
+    "description": "Texto do botão de cancelar"
+  },
+  
+  "save": "Salvar",
+  "@save": {
+    "description": "Texto do botão de salvar"
+  },
+  
+  "delete": "Excluir",
+  "@delete": {
+    "description": "Texto do botão de excluir"
+  },
+  
+  "edit": "Editar",
+  "@edit": {
+    "description": "Texto do botão de editar"
+  },
+  
+  "create": "Criar",
+  "@create": {
+    "description": "Texto do botão de criar"
+  },
+  
+  "tryAgain": "Tentar novamente",
+  "@tryAgain": {
+    "description": "Texto do botão de tentar novamente"
+  },
+  
+  "groupsTitle": "Grupos",
+  "@groupsTitle": {
+    "description": "Título da tela de grupos"
+  },
+  
+  "createGroupTooltip": "Criar novo grupo",
+  "@createGroupTooltip": {
+    "description": "Tooltip para criar um novo grupo"
+  },
+  
+  "errorLoadingGroups": "Erro ao carregar grupos",
+  "@errorLoadingGroups": {
+    "description": "Erro ao carregar grupos"
+  },
+  
+  "noGroups": "Você ainda não participa de nenhum grupo",
+  "@noGroups": {
+    "description": "Mensagem quando não há grupos"
+  },
+  
+  "createFirstGroup": "Criar meu primeiro grupo",
+  "@createFirstGroup": {
+    "description": "Botão para criar o primeiro grupo"
+  },
+  
+  "createGroup": "Criar Grupo",
+  "@createGroup": {
+    "description": "Título do diálogo de criação de grupo"
+  },
+  
+  "groupName": "Nome do grupo",
+  "@groupName": {
+    "description": "Campo de nome do grupo"
+  },
+  
+  "groupNameHint": "Ex: Poker dos Amigos",
+  "@groupNameHint": {
+    "description": "Dica para o campo de nome do grupo"
+  },
+  
+  "groupDescription": "Descrição",
+  "@groupDescription": {
+    "description": "Campo de descrição do grupo"
+  },
+  
+  "groupDescriptionHint": "Ex: Grupo para nossos jogos de sexta-feira",
+  "@groupDescriptionHint": {
+    "description": "Dica para o campo de descrição do grupo"
+  },
+  
+  "privateGroup": "Grupo privado",
+  "@privateGroup": {
+    "description": "Opção de grupo privado"
+  },
+  
+  "privateGroupDescription": "Apenas membros convidados podem participar",
+  "@privateGroupDescription": {
+    "description": "Descrição da opção de grupo privado"
+  },
+  
+  "publicGroup": "Grupo público",
+  "@publicGroup": {
+    "description": "Opção de grupo público"
+  },
+  
+  "members": "Membros",
+  "@members": {
+    "description": "Aba de membros"
+  },
+  
+  "activities": "Atividades",
+  "@activities": {
+    "description": "Aba de atividades"
+  },
+  
+  "membersTabPlaceholder": "Lista de membros do grupo",
+  "@membersTabPlaceholder": {
+    "description": "Placeholder da aba de membros"
+  },
+  
+  "inviteMember": "Convidar membro",
+  "@inviteMember": {
+    "description": "Botão para convidar membro"
+  },
+  
+  "gamesTabPlaceholder": "Jogos do grupo",
+  "@gamesTabPlaceholder": {
+    "description": "Placeholder da aba de jogos"
+  },
+  
+  "scheduleGame": "Agendar jogo",
+  "@scheduleGame": {
+    "description": "Botão para agendar jogo"
+  },
+  
+  "activitiesTabPlaceholder": "Histórico de atividades",
+  "@activitiesTabPlaceholder": {
+    "description": "Placeholder da aba de atividades"
+  },
+  
+  "editGroup": "Editar grupo",
+  "@editGroup": {
+    "description": "Opção de editar grupo"
+  },
+  
+  "shareGroup": "Compartilhar grupo",
+  "@shareGroup": {
+    "description": "Opção de compartilhar grupo"
+  },
+  
+  "leaveGroup": "Sair do grupo",
+  "@leaveGroup": {
+    "description": "Opção de sair do grupo"
+  },
+  
+  "deleteGroup": "Excluir grupo",
+  "@deleteGroup": {
+    "description": "Opção de excluir grupo"
+  },
+  
+  "memberEmail": "E-mail do jogador",
+  "@memberEmail": {
+    "description": "Campo de e-mail do jogador"
+  },
+  
+  "memberEmailHint": "Ex: jogador@exemplo.com",
+  "@memberEmailHint": {
+    "description": "Dica para o campo de e-mail do jogador"
+  },
+  
+  "invite": "Convidar",
+  "@invite": {
+    "description": "Botão de convidar"
+  },
+  
+  "leaveGroupConfirmation": "Tem certeza que deseja sair deste grupo? Você precisará de um novo convite para entrar novamente.",
+  "@leaveGroupConfirmation": {
+    "description": "Confirmação para sair do grupo"
+  },
+  
+  "leave": "Sair",
+  "@leave": {
+    "description": "Botão de sair"
+  },
+  
+  "deleteGroupConfirmation": "Tem certeza que deseja excluir este grupo? Esta ação não pode ser desfeita e todos os dados do grupo serão perdidos.",
+  "@deleteGroupConfirmation": {
+    "description": "Confirmação para excluir grupo"
+  },
+  
+  "groupInvitations": "Convites para Grupos",
+  "@groupInvitations": {
+    "description": "Título da tela de convites para grupos"
+  },
+  
+  "errorLoadingInvitations": "Erro ao carregar convites",
+  "@errorLoadingInvitations": {
+    "description": "Erro ao carregar convites"
+  },
+  
+  "noInvitations": "Você não tem convites pendentes",
+  "@noInvitations": {
+    "description": "Mensagem quando não há convites"
+  },
+  
+  "invitedBy": "Convidado por {name}",
+  "@invitedBy": {
+    "description": "Texto de convidado por",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "João"
+      }
+    }
+  },
+  
+  "invitationExpiresAt": "Expira em {date}",
+  "@invitationExpiresAt": {
+    "description": "Data de expiração do convite",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "01/01/2025"
+      }
+    }
+  },
+  
+  "decline": "Recusar",
+  "@decline": {
+    "description": "Botão de recusar convite"
+  },
+  
+  "accept": "Aceitar",
+  "@accept": {
+    "description": "Botão de aceitar convite"
+  }
+}
