@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:poker_night/core/services/deep_link_service_interface.dart';
+import 'package:poker_night/core/utils/feature_access.dart';
 import 'package:poker_night/providers/deep_link_provider.dart';
 import 'package:poker_night/providers/feature_toggle_provider.dart';
 
@@ -17,9 +18,7 @@ class DeepLinkTestScreen extends ConsumerWidget {
     final deepLinkNotifier = ref.watch(deepLinkProvider.notifier);
     
     // Verificar se a feature está habilitada
-    return conditionalFeature(
-      context: context,
-      ref: ref,
+    return FeatureAccess(
       feature: Feature.deepLinks,
       child: Scaffold(
         appBar: AppBar(

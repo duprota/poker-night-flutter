@@ -5,6 +5,8 @@ import 'package:poker_night/providers/notification_provider.dart';
 import 'package:poker_night/widgets/error_message.dart';
 import 'package:poker_night/widgets/loading_indicator.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:poker_night/core/utils/l10n_extensions.dart';
 
 class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({Key? key}) : super(key: key);
@@ -12,15 +14,16 @@ class NotificationsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notificationState = ref.watch(notificationProvider);
+    final l10n = AppLocalizations.of(context)!.safe;
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notificações'),
+        title: Text(l10n.notifications),
         actions: [
           if (notificationState.unreadCount > 0)
             IconButton(
               icon: const Icon(Icons.done_all),
-              tooltip: 'Marcar todas como lidas',
+              tooltip: l10n.markAllAsRead,
               onPressed: () {
                 ref.read(notificationProvider.notifier).markAllAsRead();
               },
@@ -32,6 +35,8 @@ class NotificationsScreen extends ConsumerWidget {
   }
   
   Widget _buildBody(BuildContext context, NotificationState state, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!.safe;
+    
     if (state.isLoading) {
       return const LoadingIndicator();
     }
@@ -55,13 +60,13 @@ class NotificationsScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Você não tem notificações',
+              l10n.noNotifications,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
             TextButton(
               onPressed: () => ref.read(notificationProvider.notifier).loadNotifications(),
-              child: const Text('Atualizar'),
+              child: Text(l10n.refresh),
             ),
           ],
         ),
@@ -103,6 +108,7 @@ class NotificationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!.safe;
     final isUnread = notification.status == NotificationStatus.unread;
     
     return Dismissible(
@@ -177,7 +183,7 @@ class NotificationItem extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: onMarkAsRead,
-                      child: const Text('Marcar como lida'),
+                      child: Text(l10n.markAsRead),
                     ),
                   ),
                 ],

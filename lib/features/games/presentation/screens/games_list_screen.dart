@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:poker_night/core/services/supabase_service.dart';
 import 'package:poker_night/core/theme/app_theme.dart';
+import 'package:poker_night/providers/auth_provider.dart';
 
-class GamesListScreen extends StatefulWidget {
+class GamesListScreen extends ConsumerStatefulWidget {
   const GamesListScreen({super.key});
 
   @override
-  State<GamesListScreen> createState() => _GamesListScreenState();
+  ConsumerState<GamesListScreen> createState() => _GamesListScreenState();
 }
 
-class _GamesListScreenState extends State<GamesListScreen> {
+class _GamesListScreenState extends ConsumerState<GamesListScreen> {
   int _selectedIndex = 0;
 
   @override
@@ -25,7 +27,7 @@ class _GamesListScreenState extends State<GamesListScreen> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
-              await SupabaseService.signOut();
+              await ref.read(authProvider.notifier).signOut();
               if (mounted) {
                 context.go('/login');
               }

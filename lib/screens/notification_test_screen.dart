@@ -392,7 +392,7 @@ class NotificationTestScreen extends ConsumerWidget {
         userIds: [userId],
         gameId: 'game_${DateTime.now().millisecondsSinceEpoch}',
         gameName: 'Poker Night #${(DateTime.now().millisecondsSinceEpoch % 1000)}',
-        resultMessage: 'Você ficou em 2º lugar e ganhou R$ 150,00',
+        resultMessage: 'Você ficou em 2º lugar e ganhou R\$ 150,00',
       );
       
       _showSuccessSnackBar(context, 'Resultado de jogo enviado com sucesso!');

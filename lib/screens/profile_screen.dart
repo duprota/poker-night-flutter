@@ -4,18 +4,22 @@ import 'package:go_router/go_router.dart';
 import 'package:poker_night/providers/auth_provider.dart';
 import 'package:poker_night/providers/feature_toggle_provider.dart';
 import 'package:poker_night/widgets/notification_badge.dart';
+import 'package:poker_night/core/utils/l10n_extensions.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final safeL10n = l10n.safe;
     final authState = ref.watch(authProvider);
     final user = authState.user;
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Meu Perfil'),
+        title: Text(safeL10n.myProfile),
         actions: [
           // Badge de notificação
           Padding(
@@ -27,7 +31,7 @@ class ProfileScreen extends ConsumerWidget {
         ],
       ),
       body: user == null
-          ? const Center(child: Text('Você precisa estar logado para ver seu perfil'))
+          ? Center(child: Text(safeL10n.loginToViewProfile))
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -55,7 +59,7 @@ class ProfileScreen extends ConsumerWidget {
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const SizedBox(height: 8),
-                        _buildSubscriptionBadge(context, authState.subscriptionStatus),
+                        _buildSubscriptionBadge(context, authState.subscriptionStatus.toString()),
                       ],
                     ),
                   ),
@@ -67,16 +71,16 @@ class ProfileScreen extends ConsumerWidget {
                     context, 
                     ref,
                     feature: Feature.statistics,
-                    title: 'Estatísticas',
+                    title: safeL10n.statistics,
                     child: _buildStatisticsSection(context),
                   ),
                   
                   const SizedBox(height: 24),
                   
                   // Configurações
-                  const Text(
-                    'Configurações',
-                    style: TextStyle(
+                  Text(
+                    safeL10n.settingsTitle,
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -85,13 +89,13 @@ class ProfileScreen extends ConsumerWidget {
                   _buildSettingsItem(
                     context,
                     icon: Icons.notifications_outlined,
-                    title: 'Notificações',
+                    title: safeL10n.notifications,
                     onTap: () => context.push('/notifications'),
                   ),
                   _buildSettingsItem(
                     context,
                     icon: Icons.language_outlined,
-                    title: 'Idioma',
+                    title: safeL10n.language,
                     onTap: () {
                       // Navegação para configurações de idioma
                     },
@@ -99,9 +103,9 @@ class ProfileScreen extends ConsumerWidget {
                   _buildSettingsItem(
                     context,
                     icon: Icons.dark_mode_outlined,
-                    title: 'Tema',
+                    title: safeL10n.theme,
                     onTap: () {
-                      // Navegação para configurações de tema
+                      context.push('/settings/theme');
                     },
                   ),
                   
@@ -121,7 +125,7 @@ class ProfileScreen extends ConsumerWidget {
                         backgroundColor: Theme.of(context).colorScheme.error,
                         foregroundColor: Theme.of(context).colorScheme.onError,
                       ),
-                      child: const Text('Sair'),
+                      child: Text(safeL10n.logoutButton),
                     ),
                   ),
                 ],
@@ -144,7 +148,13 @@ class ProfileScreen extends ConsumerWidget {
     final authState = ref.watch(authProvider);
     
     // Verificar se o usuário tem acesso à feature
-    final hasAccess = isEnabled && ref.read(authProvider.notifier).hasAccess(subscriptionLevel);
+    final hasAccess = isEnabled && subscriptionLevel != null && 
+        ref.read(authProvider.notifier).hasAccess(
+          SubscriptionFeature.values.firstWhere(
+            (f) => f.toString() == 'SubscriptionFeature.${subscriptionLevel}',
+            orElse: () => SubscriptionFeature.createGame,
+          )
+        );
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,7 +187,7 @@ class ProfileScreen extends ConsumerWidget {
             context,
             isEnabled: isEnabled,
             requiredSubscription: subscriptionLevel,
-            currentSubscription: authState.subscriptionStatus,
+            currentSubscription: authState.subscriptionStatus.toString(),
           ),
       ],
     );
@@ -191,17 +201,17 @@ class ProfileScreen extends ConsumerWidget {
     required String currentSubscription,
   }) {
     if (!isEnabled) {
-      return const Card(
+      return Card(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              Icon(Icons.info_outline, color: Colors.grey),
-              SizedBox(width: 16),
+              const Icon(Icons.info_outline, color: Colors.grey),
+              const SizedBox(width: 16),
               Expanded(
                 child: Text(
                   'Esta funcionalidade não está disponível no momento.',
-                  style: TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.grey),
                 ),
               ),
             ],
@@ -218,17 +228,17 @@ class ProfileScreen extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.workspace_premium,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Colors.white,
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Text(
                       'Funcionalidade exclusiva para assinantes $requiredSubscription',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -277,7 +287,7 @@ class ProfileScreen extends ConsumerWidget {
               context,
               icon: Icons.attach_money,
               title: 'Saldo Total',
-              value: 'R$ 1.250,00',
+              value: 'R\$ 1.250,00',
             ),
           ],
         ),

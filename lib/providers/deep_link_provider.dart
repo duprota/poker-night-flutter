@@ -47,9 +47,9 @@ class DeepLinkState {
 /// Notifier para o provider de deep link
 class DeepLinkNotifier extends StateNotifier<DeepLinkState> {
   final DeepLinkServiceInterface _deepLinkService;
-  final Reader _read;
+  final Ref _ref;
   
-  DeepLinkNotifier(this._deepLinkService, this._read) : super(const DeepLinkState()) {
+  DeepLinkNotifier(this._deepLinkService, this._ref) : super(const DeepLinkState()) {
     _initialize();
   }
   
@@ -190,7 +190,7 @@ class DeepLinkNotifier extends StateNotifier<DeepLinkState> {
     }
     
     // Verificar se o usuário está autenticado
-    final authState = _read(authProvider);
+    final authState = _ref.watch(authProvider);
     if (!authState.isAuthenticated) {
       // Armazenar o link para processamento após o login
       state = state.copyWith(
@@ -219,5 +219,5 @@ class DeepLinkNotifier extends StateNotifier<DeepLinkState> {
 /// Provider para o estado de deep link
 final deepLinkProvider = StateNotifierProvider<DeepLinkNotifier, DeepLinkState>((ref) {
   final deepLinkService = ref.watch(deepLinkServiceProvider);
-  return DeepLinkNotifier(deepLinkService, ref.read);
+  return DeepLinkNotifier(deepLinkService, ref);
 });

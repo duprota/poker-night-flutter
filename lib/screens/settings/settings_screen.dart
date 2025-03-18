@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:poker_night/providers/auth_provider.dart';
 import 'package:poker_night/providers/locale_provider.dart';
 import 'package:poker_night/widgets/common/app_bar_widget.dart';
+import 'package:poker_night/core/utils/l10n_extensions.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -12,13 +13,14 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final safeL10n = l10n.safe;
     final localeNotifier = ref.read(localeProvider.notifier);
     final authState = ref.watch(authProvider);
     
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBarWidget(
-        title: l10n.settingsTitle,
+        title: safeL10n.settingsTitle,
         showBackButton: true,
       ),
       body: ListView(
@@ -26,10 +28,10 @@ class SettingsScreen extends ConsumerWidget {
         children: [
           // Seção de Perfil
           if (!authState.isAnonymous) ...[
-            _buildSectionTitle(l10n.profileTitle),
+            _buildSectionTitle(safeL10n.profileTitle),
             _buildSettingCard(
               icon: Icons.person,
-              title: l10n.profileTitle,
+              title: safeL10n.profileTitle,
               subtitle: authState.user?.email ?? '',
               onTap: () {
                 // Navegar para a tela de perfil
@@ -40,10 +42,10 @@ class SettingsScreen extends ConsumerWidget {
           ],
           
           // Seção de Aparência
-          _buildSectionTitle(l10n.themeSettingTitle),
+          _buildSectionTitle(safeL10n.themeSettingTitle),
           _buildSettingCard(
             icon: Icons.language,
-            title: l10n.languageSettingTitle,
+            title: safeL10n.languageSettingTitle,
             subtitle: localeNotifier.getCurrentLanguageName(),
             onTap: () {
               // Navegar para a tela de configuração de idioma
@@ -52,8 +54,8 @@ class SettingsScreen extends ConsumerWidget {
           ),
           _buildSettingCard(
             icon: Icons.dark_mode,
-            title: l10n.themeSettingTitle,
-            subtitle: l10n.darkThemeOption,
+            title: safeL10n.themeSettingTitle,
+            subtitle: safeL10n.darkThemeOption,
             onTap: () {
               // Navegar para a tela de configuração de tema (a ser implementada)
               // context.push('/settings/theme');
@@ -63,11 +65,11 @@ class SettingsScreen extends ConsumerWidget {
           
           // Seção de Assinatura
           if (!authState.isAnonymous) ...[
-            _buildSectionTitle(l10n.subscriptionCurrentPlan),
+            _buildSectionTitle(safeL10n.subscriptionCurrentPlan),
             _buildSettingCard(
               icon: Icons.card_membership,
-              title: _getSubscriptionTitle(l10n, authState.subscriptionStatus),
-              subtitle: _getSubscriptionDescription(l10n, authState.subscriptionStatus),
+              title: _getSubscriptionTitle(safeL10n, authState.subscriptionStatus),
+              subtitle: _getSubscriptionDescription(safeL10n, authState.subscriptionStatus),
               onTap: () {
                 // Navegar para a tela de assinaturas
                 context.push('/subscriptions');
@@ -77,10 +79,10 @@ class SettingsScreen extends ConsumerWidget {
           ],
           
           // Seção de Informações
-          _buildSectionTitle(l10n.aboutSettingTitle),
+          _buildSectionTitle(safeL10n.aboutSettingTitle),
           _buildSettingCard(
             icon: Icons.info,
-            title: l10n.aboutSettingTitle,
+            title: safeL10n.aboutSettingTitle,
             subtitle: 'Poker Night v1.0.0',
             onTap: () {
               // Mostrar informações sobre o aplicativo
@@ -89,7 +91,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           _buildSettingCard(
             icon: Icons.privacy_tip,
-            title: l10n.privacySettingTitle,
+            title: safeL10n.privacySettingTitle,
             subtitle: '',
             onTap: () {
               // Mostrar política de privacidade
@@ -115,7 +117,7 @@ class SettingsScreen extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(12.0),
                   ),
                 ),
-                child: Text(l10n.logoutButton),
+                child: Text(safeL10n.logoutButton),
               ),
             ),
           ],
@@ -186,20 +188,20 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
   
-  String _getSubscriptionTitle(AppLocalizations l10n, SubscriptionStatus status) {
+  String _getSubscriptionTitle(SafeL10n l10n, SubscriptionStatus status) {
     switch (status) {
       case SubscriptionStatus.free:
-        return l10n.subscriptionFreeTitle;
+        return l10n.get('subscriptionFree', 'Free Plan');
       case SubscriptionStatus.premium:
-        return l10n.subscriptionPremiumTitle;
+        return l10n.get('subscriptionPremium', 'Premium Plan');
       case SubscriptionStatus.pro:
-        return l10n.subscriptionProTitle;
+        return l10n.get('subscriptionPro', 'Pro Plan');
       default:
-        return l10n.subscriptionFreeTitle;
+        return '';
     }
   }
   
-  String _getSubscriptionDescription(AppLocalizations l10n, SubscriptionStatus status) {
+  String _getSubscriptionDescription(SafeL10n l10n, SubscriptionStatus status) {
     switch (status) {
       case SubscriptionStatus.free:
         return '8 jogadores, 5 jogos';

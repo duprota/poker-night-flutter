@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:poker_night/core/services/supabase_service.dart';
+import 'package:poker_night/providers/auth_provider.dart';
 import 'package:poker_night/core/theme/app_theme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:poker_night/core/utils/l10n_extensions.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -33,9 +36,9 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await SupabaseService.signInWithEmail(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
+      await ref.read(authProvider.notifier).signIn(
+        _emailController.text.trim(),
+        _passwordController.text,
       );
       
       if (mounted) {
@@ -43,7 +46,10 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       setState(() {
-        _errorMessage = 'Falha ao fazer login. Verifique suas credenciais.';
+        _errorMessage = AppLocalizations.of(context)!.safe.get(
+          'loginFailed',
+          'Login failed. Please check your credentials.'
+        );
       });
     } finally {
       if (mounted) {
@@ -56,6 +62,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final safeL10n = l10n.safe;
+    
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       body: SafeArea(
@@ -90,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   
                   // Title
                   Text(
-                    'Bem-vindo de volta',
+                    safeL10n.welcomeBack,
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -102,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   
                   // Subtitle
                   Text(
-                    'Faça login para continuar',
+                    safeL10n.loginToContinue,
                     style: TextStyle(
                       fontSize: 16,
                       color: AppTheme.textSecondary,
@@ -133,16 +142,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email_outlined),
+                    decoration: InputDecoration(
+                      labelText: safeL10n.email,
+                      prefixIcon: const Icon(Icons.email_outlined),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, insira seu email';
+                        return safeL10n.pleaseEnterEmail;
                       }
                       if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                        return 'Por favor, insira um email válido';
+                        return safeL10n.pleaseEnterValidEmail;
                       }
                       return null;
                     },
@@ -153,16 +162,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextFormField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Senha',
-                      prefixIcon: Icon(Icons.lock_outline),
+                    decoration: InputDecoration(
+                      labelText: safeL10n.password,
+                      prefixIcon: const Icon(Icons.lock_outline),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, insira sua senha';
+                        return safeL10n.pleaseEnterPassword;
                       }
                       if (value.length < 6) {
-                        return 'A senha deve ter pelo menos 6 caracteres';
+                        return safeL10n.passwordMinLength;
                       }
                       return null;
                     },
@@ -186,9 +195,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text(
-                            'Entrar',
-                            style: TextStyle(fontSize: 16),
+                        : Text(
+                            safeL10n.login,
+                            style: const TextStyle(fontSize: 16),
                           ),
                   ),
                   const SizedBox(height: 16),
@@ -198,13 +207,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Não tem uma conta?',
+                        safeL10n.dontHaveAccount,
                         style: TextStyle(color: AppTheme.textSecondary),
                       ),
                       TextButton(
                         onPressed: () => context.go('/register'),
                         child: Text(
-                          'Registre-se',
+                          safeL10n.register,
                           style: TextStyle(color: AppTheme.primaryPurple),
                         ),
                       ),

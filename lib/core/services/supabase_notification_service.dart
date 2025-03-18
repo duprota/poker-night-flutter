@@ -7,18 +7,17 @@ import 'package:poker_night/models/notification.dart';
 
 /// Implementação do serviço de notificação usando Supabase
 class SupabaseNotificationService implements NotificationServiceInterface {
-  final SupabaseService _supabaseService;
   final String _notificationsTable = 'notifications';
   RealtimeChannel? _notificationsChannel;
   final StreamController<AppNotification> _notificationsController = 
       StreamController<AppNotification>.broadcast();
 
-  SupabaseNotificationService(this._supabaseService);
+  SupabaseNotificationService();
 
   @override
   Future<void> initialize() async {
     // Verificar se o usuário está autenticado
-    final currentUser = _supabaseService.getCurrentUser();
+    final currentUser = SupabaseService.client.auth.currentUser;
     if (currentUser != null) {
       // Iniciar a escuta de notificações em tempo real
       await _setupRealtimeListener(currentUser.id);
@@ -40,7 +39,7 @@ class SupabaseNotificationService implements NotificationServiceInterface {
       data: data,
     );
 
-    await _supabaseService.client
+    await SupabaseService.client
         .from(_notificationsTable)
         .insert(notification.toJson());
   }
@@ -62,7 +61,7 @@ class SupabaseNotificationService implements NotificationServiceInterface {
       ).toJson()
     ).toList();
 
-    await _supabaseService.client
+    await SupabaseService.client
         .from(_notificationsTable)
         .insert(notifications);
   }
@@ -84,14 +83,14 @@ class SupabaseNotificationService implements NotificationServiceInterface {
       data: data,
     );
 
-    await _supabaseService.client
+    await SupabaseService.client
         .from(_notificationsTable)
         .insert(notification.toJson());
   }
 
   @override
   Future<void> cancelScheduledNotification(String notificationId) async {
-    await _supabaseService.client
+    await SupabaseService.client
         .from(_notificationsTable)
         .delete()
         .eq('id', notificationId)
@@ -100,7 +99,7 @@ class SupabaseNotificationService implements NotificationServiceInterface {
 
   @override
   Future<List<AppNotification>> getNotificationsForUser(String userId) async {
-    final response = await _supabaseService.client
+    final response = await SupabaseService.client
         .from(_notificationsTable)
         .select()
         .eq('user_id', userId)
@@ -113,7 +112,7 @@ class SupabaseNotificationService implements NotificationServiceInterface {
 
   @override
   Future<void> markNotificationAsRead(String notificationId) async {
-    await _supabaseService.client
+    await SupabaseService.client
         .from(_notificationsTable)
         .update({
           'status': NotificationStatus.read.toString().split('.').last
@@ -123,7 +122,7 @@ class SupabaseNotificationService implements NotificationServiceInterface {
 
   @override
   Future<void> markAllNotificationsAsRead(String userId) async {
-    await _supabaseService.client
+    await SupabaseService.client
         .from(_notificationsTable)
         .update({
           'status': NotificationStatus.read.toString().split('.').last
@@ -134,7 +133,7 @@ class SupabaseNotificationService implements NotificationServiceInterface {
 
   @override
   Future<void> deleteNotification(String notificationId) async {
-    await _supabaseService.client
+    await SupabaseService.client
         .from(_notificationsTable)
         .delete()
         .eq('id', notificationId);
@@ -172,7 +171,7 @@ class SupabaseNotificationService implements NotificationServiceInterface {
     await unsubscribeFromNotifications();
     
     try {
-      _notificationsChannel = _supabaseService.client
+      _notificationsChannel = SupabaseService.client
           .channel('notifications_$userId')
           .onPostgresChanges(
             event: PostgresChangeEvent.insert,
@@ -214,7 +213,7 @@ class SupabaseNotificationService implements NotificationServiceInterface {
       actionUrl: '/games/$gameId',
     );
 
-    await _supabaseService.client
+    await SupabaseService.client
         .from(_notificationsTable)
         .insert(notification.toJson());
   }
@@ -237,7 +236,7 @@ class SupabaseNotificationService implements NotificationServiceInterface {
       actionUrl: '/games/$gameId',
     );
 
-    await _supabaseService.client
+    await SupabaseService.client
         .from(_notificationsTable)
         .insert(notification.toJson());
   }
@@ -262,7 +261,7 @@ class SupabaseNotificationService implements NotificationServiceInterface {
       ).toJson()
     ).toList();
 
-    await _supabaseService.client
+    await SupabaseService.client
         .from(_notificationsTable)
         .insert(notifications);
   }
@@ -287,7 +286,7 @@ class SupabaseNotificationService implements NotificationServiceInterface {
       ).toJson()
     ).toList();
 
-    await _supabaseService.client
+    await SupabaseService.client
         .from(_notificationsTable)
         .insert(notifications);
   }

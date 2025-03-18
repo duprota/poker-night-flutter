@@ -80,6 +80,10 @@
   "darkThemeOption": "Dark",
   "lightThemeOption": "Light",
   "systemThemeOption": "System",
+  "purpleThemeOption": "Purple",
+  "blueThemeOption": "Blue",
+  "themeSelectionTitle": "Select theme",
+  "themeSelectionSubtitle": "Choose the theme that best fits your style",
   
   "okButton": "OK",
   "yesButton": "Yes",
@@ -88,5 +92,77 @@
   "continueButton": "Continue",
   "backButton": "Back",
   "nextButton": "Next",
-  "doneButton": "Done"
+  "doneButton": "Done",
+  
+  "groupsTitle": "Groups",
+  "newGroupButton": "New Group",
+  "joinGroupButton": "Join Group",
+  "myGroupsButton": "My Groups",
+  "viewGroups": "View Groups",
+  "cancel": "Cancel",
+  "joinGroup": "Join Group",
+  
+  "groupInvitation": "Group Invitation",
+  "groupInvitationTitle": "You've been invited to join a group!",
+  "groupInvitationDescription": "Please review the invitation details below.",
+  "invitationAccepted": "Invitation accepted! You are now a member of this group.",
+  
+  "removeMember": "Remove Member",
+  "removeMemberConfirmation": "Are you sure you want to remove {userId} from this group?",
+  "remove": "Remove",
+  
+  "changeRole": "Change Role",
+  "changeRoleConfirmation": "Are you sure you want to change the role of {userId} to {role}?",
+  "confirm": "Confirm",
+  
+  "invite": "Invite",
+  "admin": "Administrator",
+  "dealer": "Dealer",
+  "player": "Player",
+  
+  "requiredField": "This field is required",
+  "invalidEmail": "Invalid email format",
+  "role": "Role",
+  
+  "delete": "Delete",
+  "inviteMember": "Invite Member",
+  "email": "Email",
+  "enterEmailToInvite": "Enter email to invite",
+  
+  "save": "Save",
+  "deleteGroup": "Delete Group",
+  "deleteGroupConfirmation": "Are you sure you want to delete the group {name}?",
+  "players": "Players",
+  
+  "enterGroupName": "Enter group name",
+  "enterGroupDescription": "Enter group description",
+  "publicGroup": "Public Group",
+  "publicGroupDescription": "Allow anyone to find and join this group",
+  "maxPlayers": "Maximum Players",
+  
+  "activityInvitationAccepted": "Invitation accepted",
+  "editGroup": "Edit Group",
+  "groupName": "Group Name",
+  "description": "Description",
+  
+  "activityGameCreated": "Game created",
+  "activityGameUpdated": "Game updated",
+  "activityGameDeleted": "Game deleted",
+  "activityInvitationSent": "Invitation sent",
+  
+  "activityGroupCreated": "Group created",
+  "activityMemberAdded": "Member added",
+  "activityMemberRemoved": "Member removed",
+  "activityRoleChanged": "Role changed",
+  
+  "makeAdmin": "Make Admin",
+  "makeDealer": "Make Dealer",
+  "makePlayer": "Make Player",
+  "noGames": "No games created yet",
+  "createGame": "Create Game",
+  "noActivities": "No recent activities",
+  
+  "tryAgain": "Try Again",
+  "noMembers": "No members in this group",
+  "you": "you"
 }
