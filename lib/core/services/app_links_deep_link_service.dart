@@ -28,7 +28,7 @@ class AppLinksDeepLinkService implements DeepLinkServiceInterface {
       });
       
       // Verificar se o app foi aberto por um link
-      final initialUri = await _appLinks.getInitialAppLink();
+      final initialUri = await _appLinks.getInitialLink();
       if (initialUri != null) {
         _handleDeepLink(initialUri);
       }
@@ -84,13 +84,27 @@ class AppLinksDeepLinkService implements DeepLinkServiceInterface {
   
   /// Processa um deep link recebido
   Future<bool> _handleDeepLink(Uri uri) async {
+    // Evitar processar o mesmo deep link repetidamente
+    if (_lastDeepLink != null && _lastDeepLink.toString() == uri.toString()) {
+      return true;
+    }
+    
     _lastDeepLink = uri;
     _deepLinkStreamController.add(uri);
     
-    debugPrint('Deep link recebido: $uri');
+    // Em modo web, limitar os logs para evitar poluição do console
+    if (!kIsWeb || uri.path.isNotEmpty && uri.path != '/') {
+      debugPrint('Deep link recebido: $uri');
+    }
     
     // Verificar se temos um handler registrado para este path
     final path = uri.path;
+    
+    // Ignorar deep links para a rota raiz quando estamos em modo web
+    if (kIsWeb && (path.isEmpty || path == '/')) {
+      return true;
+    }
+    
     if (_handlers.containsKey(path)) {
       return await _handlers[path]!(uri);
     }
@@ -102,7 +116,10 @@ class AppLinksDeepLinkService implements DeepLinkServiceInterface {
       }
     }
     
-    debugPrint('Nenhum handler encontrado para o path: $path');
+    // Limitar logs de erros em modo web para evitar poluição do console
+    if (!kIsWeb || path.isNotEmpty && path != '/') {
+      debugPrint('Nenhum handler encontrado para o path: $path');
+    }
     return false;
   }
 }

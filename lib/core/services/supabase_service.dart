@@ -13,21 +13,59 @@ class SupabaseService {
 
   /// Initialize Supabase
   static Future<void> initialize() async {
-    await Supabase.initialize(
-      url: SupabaseConstants.supabaseUrl,
-      anonKey: SupabaseConstants.supabaseAnonKey,
-      debug: kDebugMode,
-    );
+    try {
+      debugPrint('Iniciando inicialização do Supabase...');
+      await Supabase.initialize(
+        url: SupabaseConstants.supabaseUrl,
+        anonKey: SupabaseConstants.supabaseAnonKey,
+        debug: kDebugMode,
+      );
+      debugPrint('Supabase inicializado com sucesso!');
+    } catch (e) {
+      debugPrint('Erro ao inicializar o Supabase: $e');
+      // Em modo web, podemos continuar mesmo com erro na inicialização
+      // para permitir o desenvolvimento local sem conexão com o Supabase
+      if (!kIsWeb) {
+        rethrow;
+      }
+    }
   }
 
   /// Get Supabase client instance
-  static SupabaseClient get client => _testClient ?? Supabase.instance.client;
+  static SupabaseClient get client {
+    try {
+      return _testClient ?? Supabase.instance.client;
+    } catch (e) {
+      debugPrint('Erro ao acessar o cliente Supabase: $e');
+      // Criar um cliente mock para desenvolvimento quando o Supabase não estiver disponível
+      if (kIsWeb && _testClient == null) {
+        debugPrint('Criando cliente mock para desenvolvimento web');
+        // Retorna um cliente mock para desenvolvimento
+        return SupabaseClient('mock_url', 'mock_key');
+      }
+      rethrow;
+    }
+  }
 
   /// Get current user
-  static User? get currentUser => client.auth.currentUser;
+  static User? get currentUser {
+    try {
+      return client.auth.currentUser;
+    } catch (e) {
+      debugPrint('Erro ao acessar o usuário atual: $e');
+      return null;
+    }
+  }
 
   /// Check if user is authenticated
-  static bool get isAuthenticated => currentUser != null;
+  static bool get isAuthenticated {
+    try {
+      return currentUser != null;
+    } catch (e) {
+      debugPrint('Erro ao verificar autenticação: $e');
+      return false;
+    }
+  }
   
   /// Get current user (método de instância para compatibilidade com testes)
   User? getCurrentUser() {
