@@ -13,6 +13,7 @@ enum Feature {
   chatInGame,        // Chat durante o jogo
   tournaments,       // Torneios
   leaderboards,      // Rankings
+  deepLinks,         // Deep Links
 }
 
 /// Estado para o provider de feature toggles
@@ -118,6 +119,7 @@ class FeatureToggleNotifier extends StateNotifier<FeatureToggleState> {
         Feature.chatInGame: 'premium',
         Feature.tournaments: 'pro',
         Feature.leaderboards: 'premium',
+        Feature.deepLinks: 'free',
       };
       
       state = state.copyWith(

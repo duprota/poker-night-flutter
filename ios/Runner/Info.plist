@@ -24,6 +24,28 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	
+	<!-- URL Scheme para Deep Links -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.example.pokernight</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>pokernight</string>
+			</array>
+		</dict>
+	</array>
+	
+	<!-- Universal Links (App Links) -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:pokernight.app</string>
+	</array>
+	
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
