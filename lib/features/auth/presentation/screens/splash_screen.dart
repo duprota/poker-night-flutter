@@ -18,15 +18,23 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkAuthStatus() async {
-    // Simulate loading delay
-    await Future.delayed(const Duration(seconds: 2));
-    
-    if (!mounted) return;
+    try {
+      // Simulate loading delay
+      await Future.delayed(const Duration(seconds: 2));
+      
+      if (!mounted) return;
 
-    // Check if user is authenticated and navigate accordingly
-    if (SupabaseService.isAuthenticated) {
-      context.go('/games');
-    } else {
+      // Check if user is authenticated and navigate accordingly
+      if (SupabaseService.isAuthenticated) {
+        context.go('/games');
+      } else {
+        context.go('/login');
+      }
+    } catch (e) {
+      debugPrint('Erro ao verificar status de autenticação: $e');
+      if (!mounted) return;
+      
+      // Em caso de erro, direcionar para a tela de login
       context.go('/login');
     }
   }

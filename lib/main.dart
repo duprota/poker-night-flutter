@@ -10,15 +10,24 @@ import 'package:poker_night/providers/auth_provider.dart';
 import 'package:poker_night/providers/deep_link_provider.dart';
 import 'package:poker_night/providers/locale_provider.dart';
 import 'package:poker_night/providers/notification_provider.dart';
+import 'package:poker_night/providers/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize Supabase
-  await SupabaseService.initialize();
-  
-  // Initialize timeago localization
-  initTimeagoLocalization();
+  try {
+    // Initialize Supabase
+    debugPrint('Iniciando aplicativo Poker Night...');
+    await SupabaseService.initialize();
+    
+    // Initialize timeago localization
+    initTimeagoLocalization();
+    
+    debugPrint('Inicialização concluída com sucesso!');
+  } catch (e) {
+    debugPrint('Erro durante a inicialização do aplicativo: $e');
+    // Continuamos mesmo com erro para permitir o desenvolvimento local
+  }
   
   runApp(
     const ProviderScope(
@@ -32,37 +41,53 @@ class PokerNightApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(appRouterProvider);
-    final locale = ref.watch(localeProvider);
-    
-    // Inicializar o serviço de notificação
-    // Isso carregará as notificações do usuário quando estiver autenticado
-    ref.watch(notificationProvider);
-    
-    // Inicializar o serviço de deep link
-    // Isso configurará os handlers para processar deep links
-    ref.watch(deepLinkProvider);
-    
-    return MaterialApp.router(
-      title: 'Poker Night',
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.dark, // Default to dark theme
-      routerConfig: router,
-      debugShowCheckedModeBanner: false,
+    try {
+      final router = ref.watch(appRouterProvider);
+      final locale = ref.watch(localeProvider);
+      final theme = ref.watch(themeProvider);
       
-      // Configuração de localização
-      locale: locale,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('pt'), // Português
-        Locale('en'), // Inglês
-      ],
-    );
+      // Inicializar o serviço de notificação
+      // Isso carregará as notificações do usuário quando estiver autenticado
+      try {
+        ref.watch(notificationProvider);
+      } catch (e) {
+        debugPrint('Erro ao inicializar o serviço de notificação: $e');
+      }
+      
+      // Inicializar o serviço de deep link
+      // Isso configurará os handlers para processar deep links
+      try {
+        ref.watch(deepLinkProvider);
+      } catch (e) {
+        debugPrint('Erro ao inicializar o serviço de deep link: $e');
+      }
+      
+      return MaterialApp.router(
+        title: 'Poker Night',
+        theme: theme,
+        routerConfig: router,
+        debugShowCheckedModeBanner: false,
+        
+        // Configuração de localização
+        locale: locale,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('pt'), // Português
+          Locale('en'), // Inglês
+        ],
+      );
+    } catch (e) {
+      debugPrint('Erro ao renderizar o aplicativo: $e');
+      return MaterialApp.router(
+        title: 'Poker Night',
+        routerConfig: ref.watch(appRouterProvider),
+        debugShowCheckedModeBanner: false,
+      );
+    }
   }
 }
