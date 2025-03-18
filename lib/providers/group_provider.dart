@@ -79,7 +79,7 @@ class GroupNotifier extends StateNotifier<GroupState> {
       final groupsResponse = await _client
           .from('groups')
           .select()
-          .in_('id', groupIds);
+          .filter('id', 'in', groupIds);
 
       final groups = (groupsResponse as List)
           .map((item) => Group.fromJson(item))
