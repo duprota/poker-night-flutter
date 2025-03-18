@@ -8,6 +8,7 @@ import 'unit/providers/game_provider_test.dart' as game_provider_test;
 import 'unit/providers/player_provider_test.dart' as player_provider_test;
 import 'unit/utils/subscription_utils_test.dart' as subscription_utils_test;
 import 'unit/utils/feature_access_test.dart' as feature_access_test;
+import 'unit/services/supabase_service_test.dart' as supabase_service_test;
 
 // Testes de widget
 import 'widget/screens/language_settings_screen_test.dart' as language_settings_screen_test;
@@ -26,6 +27,7 @@ void main() {
     player_provider_test.main();
     subscription_utils_test.main();
     feature_access_test.main();
+    supabase_service_test.main();
   });
 
   group('Testes de Widget', () {

@@ -1,215 +1,215 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:poker_night/core/services/supabase_service.dart';
 
-final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier();
+/// Provider para o SupabaseService
+final supabaseServiceProvider = Provider<SupabaseService>((ref) {
+  return SupabaseService();
 });
 
-// Enum para representar os diferentes status de assinatura
+/// Enum para os status de assinatura
 enum SubscriptionStatus {
-  free,    // Acesso básico gratuito
-  premium, // Acesso intermediário pago
-  pro      // Acesso completo pago
+  free,
+  premium,
+  pro,
 }
 
+/// Enum para as funcionalidades que requerem assinatura
+enum SubscriptionFeature {
+  createGame,
+  joinGame,
+  unlimitedPlayers,
+  statistics,
+  exportData,
+  customThemes,
+}
+
+/// Estado do AuthProvider
 class AuthState {
   final User? user;
   final String? errorMessage;
-  final bool isAnonymous;
   final SubscriptionStatus subscriptionStatus;
-  
+
   AuthState({
-    this.user, 
-    this.errorMessage, 
-    this.isAnonymous = true,
+    this.user,
+    this.errorMessage,
     this.subscriptionStatus = SubscriptionStatus.free,
   });
-  
+
+  /// Verifica se o usuário está anônimo (não autenticado)
+  bool get isAnonymous => user == null;
+
+  /// Cria uma cópia do estado com os valores especificados
   AuthState copyWith({
-    User? user, 
-    String? errorMessage, 
-    bool? isAnonymous,
+    User? user,
+    String? errorMessage,
     SubscriptionStatus? subscriptionStatus,
   }) {
     return AuthState(
       user: user ?? this.user,
       errorMessage: errorMessage ?? this.errorMessage,
-      isAnonymous: isAnonymous ?? this.isAnonymous,
       subscriptionStatus: subscriptionStatus ?? this.subscriptionStatus,
+    );
+  }
+
+  /// Cria uma cópia do estado com o erro especificado
+  AuthState withError(String message) {
+    return copyWith(errorMessage: message);
+  }
+
+  /// Cria uma cópia do estado sem erro
+  AuthState withoutError() {
+    return AuthState(
+      user: user,
+      subscriptionStatus: subscriptionStatus,
+    );
+  }
+
+  /// Cria uma cópia do estado para usuário anônimo
+  AuthState asAnonymous() {
+    return AuthState(
+      subscriptionStatus: SubscriptionStatus.free,
     );
   }
 }
 
+/// Provider para o AuthNotifier
+final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
+  return AuthNotifier(ref, supabaseServiceProvider);
+});
+
+/// Notifier para o AuthProvider
 class AuthNotifier extends StateNotifier<AuthState> {
-  AuthNotifier() : super(AuthState()) {
-    // Verificar sessão ao inicializar
-    checkSession();
-  }
-  
-  // Obter o cliente Supabase
-  final supabase = Supabase.instance.client;
+  final Ref _ref;
+  final Provider<SupabaseService> _supabaseServiceProvider;
 
-  // Verificar se o usuário está autenticado
+  AuthNotifier(this._ref, this._supabaseServiceProvider) : super(AuthState());
+
+  /// Getter para o SupabaseService
+  SupabaseService get _supabaseService => _ref.read(_supabaseServiceProvider);
+
+  /// Verifica a sessão do usuário
   Future<void> checkSession() async {
-    final session = supabase.auth.currentSession;
-    if (session != null) {
-      // Buscar o status da assinatura do usuário
-      final subscriptionStatus = await _getSubscriptionStatus(session.user.id);
-      state = AuthState(
-        user: session.user, 
-        isAnonymous: false,
-        subscriptionStatus: subscriptionStatus,
-      );
-    } else {
-      state = AuthState(isAnonymous: true);
-    }
-  }
-
-  // Login com email e senha
-  Future<void> signIn(String email, String password) async {
     try {
-      final response = await supabase.auth.signInWithPassword(
-        email: email,
-        password: password,
-      );
-      
-      if (response.session != null) {
-        // Buscar o status da assinatura do usuário
-        final subscriptionStatus = await _getSubscriptionStatus(response.user!.id);
-        state = AuthState(
-          user: response.user, 
-          isAnonymous: false,
+      final user = _supabaseService.getCurrentUser();
+
+      if (user != null) {
+        final subscriptionStatus = await _supabaseService.getUserSubscriptionStatus(user.id);
+        state = state.copyWith(
+          user: user,
           subscriptionStatus: subscriptionStatus,
         );
       } else {
-        state = AuthState(errorMessage: "Falha ao fazer login", isAnonymous: true);
+        state = state.asAnonymous();
       }
     } catch (e) {
-      state = AuthState(errorMessage: "Erro: ${e.toString()}", isAnonymous: true);
+      state = state.asAnonymous().withError(e.toString());
     }
   }
 
-  // Registro de novo usuário
-  Future<void> signUp(String email, String password, String? phone) async {
+  /// Faz login com email e senha
+  Future<void> signIn(String email, String password) async {
     try {
-      final response = await supabase.auth.signUp(
+      state = state.withoutError();
+
+      final response = await _supabaseService.signInWithEmail(
         email: email,
         password: password,
-        data: {
-          'phone': phone,
-          'subscription_status': 'free', // Definir o status inicial como free
-        },
       );
-      
-      if (response.session != null) {
-        state = AuthState(
-          user: response.user, 
-          isAnonymous: false,
-          subscriptionStatus: SubscriptionStatus.free, // Usuários novos começam com plano free
+
+      if (response.user != null) {
+        final subscriptionStatus = await _supabaseService.getUserSubscriptionStatus(response.user!.id);
+        state = state.copyWith(
+          user: response.user,
+          subscriptionStatus: subscriptionStatus,
         );
-        
-        // Criar um registro na tabela de assinaturas (se necessário)
-        await _createSubscriptionRecord(response.user!.id);
       } else {
-        state = AuthState(errorMessage: "Falha ao criar conta", isAnonymous: true);
+        state = state.asAnonymous().withError('Erro ao fazer login');
       }
     } catch (e) {
-      state = AuthState(errorMessage: "Erro: ${e.toString()}", isAnonymous: true);
+      state = state.asAnonymous().withError(e.toString());
     }
   }
 
-  // Logout
-  Future<void> signOut() async {
-    await supabase.auth.signOut();
-    state = AuthState(isAnonymous: true);
-  }
-  
-  // Atualizar o status da assinatura do usuário
-  Future<void> updateSubscription(SubscriptionStatus newStatus) async {
-    if (state.user == null) {
-      state = state.copyWith(errorMessage: "Usuário não autenticado");
-      return;
-    }
-    
+  /// Faz cadastro com email e senha
+  Future<void> signUp(String email, String password, String name) async {
     try {
-      // Atualizar o status da assinatura no banco de dados
-      await supabase
-          .from('user_subscriptions')
-          .update({'status': newStatus.toString().split('.').last})
-          .eq('user_id', state.user!.id);
-      
-      // Atualizar o estado local
-      state = state.copyWith(subscriptionStatus: newStatus);
+      state = state.withoutError();
+
+      final response = await _supabaseService.signUpWithEmail(
+        email: email,
+        password: password,
+        name: name,
+      );
+
+      if (response.user != null) {
+        final subscriptionStatus = await _supabaseService.getUserSubscriptionStatus(response.user!.id);
+        state = state.copyWith(
+          user: response.user,
+          subscriptionStatus: subscriptionStatus,
+        );
+      } else {
+        state = state.asAnonymous().withError('Erro ao fazer cadastro');
+      }
     } catch (e) {
-      state = state.copyWith(errorMessage: "Erro ao atualizar assinatura: ${e.toString()}");
+      state = state.asAnonymous().withError(e.toString());
     }
   }
-  
-  // Verificar se o usuário tem acesso a uma determinada funcionalidade
+
+  /// Faz logout
+  Future<void> signOut() async {
+    try {
+      await _supabaseService.signOut();
+      state = state.asAnonymous();
+    } catch (e) {
+      state = state.withError(e.toString());
+    }
+  }
+
+  /// Atualiza o status da assinatura
+  Future<void> updateSubscription(SubscriptionStatus status) async {
+    try {
+      if (state.user != null) {
+        await _supabaseService.updateUserSubscription(
+          userId: state.user!.id,
+          status: status,
+        );
+        state = state.copyWith(subscriptionStatus: status);
+      }
+    } catch (e) {
+      state = state.withError(e.toString());
+    }
+  }
+
+  /// Verifica se o usuário tem acesso a uma funcionalidade
   bool hasAccess(SubscriptionFeature feature) {
+    if (state.isAnonymous) {
+      return false;
+    }
+
     switch (feature) {
       case SubscriptionFeature.createGame:
-        // Todos os usuários autenticados podem criar jogos
-        return !state.isAnonymous;
-      
+        // Disponível para todos os usuários autenticados
+        return true;
+      case SubscriptionFeature.joinGame:
+        // Disponível para todos os usuários autenticados
+        return true;
       case SubscriptionFeature.unlimitedPlayers:
-        // Apenas usuários premium e pro podem ter jogadores ilimitados
-        return state.subscriptionStatus == SubscriptionStatus.premium || 
-               state.subscriptionStatus == SubscriptionStatus.pro;
-      
+        // Requer Premium ou Pro
+        return state.subscriptionStatus == SubscriptionStatus.premium ||
+            state.subscriptionStatus == SubscriptionStatus.pro;
       case SubscriptionFeature.statistics:
-        // Apenas usuários pro têm acesso a estatísticas avançadas
+        // Requer Pro
         return state.subscriptionStatus == SubscriptionStatus.pro;
-      
+      case SubscriptionFeature.exportData:
+        // Requer Pro
+        return state.subscriptionStatus == SubscriptionStatus.pro;
+      case SubscriptionFeature.customThemes:
+        // Requer Premium ou Pro
+        return state.subscriptionStatus == SubscriptionStatus.premium ||
+            state.subscriptionStatus == SubscriptionStatus.pro;
       default:
         return false;
     }
   }
-  
-  // Buscar o status da assinatura do usuário do banco de dados
-  Future<SubscriptionStatus> _getSubscriptionStatus(String userId) async {
-    try {
-      final response = await supabase
-          .from('user_subscriptions')
-          .select('status')
-          .eq('user_id', userId)
-          .single();
-      
-      final status = response['status'] as String;
-      
-      switch (status) {
-        case 'premium':
-          return SubscriptionStatus.premium;
-        case 'pro':
-          return SubscriptionStatus.pro;
-        default:
-          return SubscriptionStatus.free;
-      }
-    } catch (e) {
-      // Se ocorrer um erro ou o usuário não tiver um registro de assinatura,
-      // retornar o status free
-      return SubscriptionStatus.free;
-    }
-  }
-  
-  // Criar um registro de assinatura para um novo usuário
-  Future<void> _createSubscriptionRecord(String userId) async {
-    try {
-      await supabase.from('user_subscriptions').insert({
-        'user_id': userId,
-        'status': 'free',
-        'start_date': DateTime.now().toIso8601String(),
-        'end_date': null, // Plano free não tem data de término
-      });
-    } catch (e) {
-      print('Erro ao criar registro de assinatura: ${e.toString()}');
-    }
-  }
-}
-
-// Enum para representar as funcionalidades que podem ser restritas por assinatura
-enum SubscriptionFeature {
-  createGame,       // Criar um jogo
-  unlimitedPlayers, // Ter jogadores ilimitados em um jogo
-  statistics,       // Acessar estatísticas avançadas
 }

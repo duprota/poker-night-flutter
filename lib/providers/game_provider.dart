@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:poker_night/core/services/supabase_service.dart';
 
 // Modelo para representar um jogo de poker
 class Game {
@@ -73,22 +74,12 @@ class GamesState {
 class GamesNotifier extends StateNotifier<GamesState> {
   GamesNotifier() : super(GamesState());
   
-  // Obter o cliente Supabase
-  final supabase = Supabase.instance.client;
-  
   // Carregar todos os jogos
-  Future<void> loadGames() async {
+  Future<void> loadGames(String userId) async {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
       
-      final response = await supabase
-          .from('games')
-          .select()
-          .order('date', ascending: false);
-      
-      final games = (response as List)
-          .map((game) => Game.fromMap(game))
-          .toList();
+      final games = await SupabaseService.getGames(userId);
       
       state = state.copyWith(games: games, isLoading: false);
     } catch (e) {
@@ -104,9 +95,9 @@ class GamesNotifier extends StateNotifier<GamesState> {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
       
-      await supabase.from('games').insert(game.toMap());
+      await SupabaseService.createGame(game);
       
-      await loadGames(); // Recarregar a lista de jogos
+      await loadGames(game.userId); // Recarregar a lista de jogos
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -120,12 +111,9 @@ class GamesNotifier extends StateNotifier<GamesState> {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
       
-      await supabase
-          .from('games')
-          .update(game.toMap())
-          .eq('id', game.id);
+      await SupabaseService.updateGame(game);
       
-      await loadGames(); // Recarregar a lista de jogos
+      await loadGames(game.userId); // Recarregar a lista de jogos
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -135,16 +123,13 @@ class GamesNotifier extends StateNotifier<GamesState> {
   }
   
   // Excluir um jogo
-  Future<void> deleteGame(String gameId) async {
+  Future<void> deleteGame(String gameId, String userId) async {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
       
-      await supabase
-          .from('games')
-          .delete()
-          .eq('id', gameId);
+      await SupabaseService.deleteGame(gameId);
       
-      await loadGames(); // Recarregar a lista de jogos
+      await loadGames(userId); // Recarregar a lista de jogos
     } catch (e) {
       state = state.copyWith(
         isLoading: false,

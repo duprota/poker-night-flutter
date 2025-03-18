@@ -1,63 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-
-// Modelo para representar um jogador
-class Player {
-  final String id;
-  final String name;
-  final String? phone;
-  final String? email;
-  final String? photoUrl;
-  
-  Player({
-    required this.id,
-    required this.name,
-    this.phone,
-    this.email,
-    this.photoUrl,
-  });
-  
-  // Criar um Player a partir de um Map (para uso com Supabase)
-  factory Player.fromMap(Map<String, dynamic> map) {
-    return Player(
-      id: map['id'],
-      name: map['name'],
-      phone: map['phone'],
-      email: map['email'],
-      photoUrl: map['photo_url'],
-    );
-  }
-  
-  // Converter Player para Map (para uso com Supabase)
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'phone': phone,
-      'email': email,
-      'photo_url': photoUrl,
-    };
-  }
-}
+import 'package:poker_night/core/services/supabase_service.dart';
+import 'package:poker_night/models/player.dart';
 
 // Estado para o provider de jogadores
-class PlayersState {
+class PlayerState {
   final List<Player> players;
   final bool isLoading;
   final String? errorMessage;
   
-  PlayersState({
+  PlayerState({
     this.players = const [],
     this.isLoading = false,
     this.errorMessage,
   });
   
-  PlayersState copyWith({
+  PlayerState copyWith({
     List<Player>? players,
     bool? isLoading,
     String? errorMessage,
   }) {
-    return PlayersState(
+    return PlayerState(
       players: players ?? this.players,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
@@ -66,25 +28,15 @@ class PlayersState {
 }
 
 // Notifier para gerenciar o estado dos jogadores
-class PlayersNotifier extends StateNotifier<PlayersState> {
-  PlayersNotifier() : super(PlayersState());
-  
-  // Obter o cliente Supabase
-  final supabase = Supabase.instance.client;
+class PlayerProvider extends StateNotifier<PlayerState> {
+  PlayerProvider() : super(PlayerState());
   
   // Carregar todos os jogadores
-  Future<void> loadPlayers() async {
+  Future<void> loadPlayers(String userId) async {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
       
-      final response = await supabase
-          .from('players')
-          .select()
-          .order('name');
-      
-      final players = (response as List)
-          .map((player) => Player.fromMap(player))
-          .toList();
+      final players = await SupabaseService.getPlayers(userId);
       
       state = state.copyWith(players: players, isLoading: false);
     } catch (e) {
@@ -96,13 +48,13 @@ class PlayersNotifier extends StateNotifier<PlayersState> {
   }
   
   // Adicionar um novo jogador
-  Future<void> addPlayer(Player player) async {
+  Future<void> createPlayer(Player player) async {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
       
-      await supabase.from('players').insert(player.toMap());
+      await SupabaseService.createPlayer(player);
       
-      await loadPlayers(); // Recarregar a lista de jogadores
+      await loadPlayers(player.userId); // Recarregar a lista de jogadores
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -116,12 +68,9 @@ class PlayersNotifier extends StateNotifier<PlayersState> {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
       
-      await supabase
-          .from('players')
-          .update(player.toMap())
-          .eq('id', player.id);
+      await SupabaseService.updatePlayer(player);
       
-      await loadPlayers(); // Recarregar a lista de jogadores
+      await loadPlayers(player.userId); // Recarregar a lista de jogadores
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -131,16 +80,13 @@ class PlayersNotifier extends StateNotifier<PlayersState> {
   }
   
   // Excluir um jogador
-  Future<void> deletePlayer(String playerId) async {
+  Future<void> deletePlayer(String playerId, String userId) async {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
       
-      await supabase
-          .from('players')
-          .delete()
-          .eq('id', playerId);
+      await SupabaseService.deletePlayer(playerId);
       
-      await loadPlayers(); // Recarregar a lista de jogadores
+      await loadPlayers(userId); // Recarregar a lista de jogadores
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -148,9 +94,37 @@ class PlayersNotifier extends StateNotifier<PlayersState> {
       );
     }
   }
+  
+  // Obter contagem de jogadores para um usuário
+  Future<int> countPlayers(String userId) async {
+    try {
+      return await SupabaseService.countPlayers(userId);
+    } catch (e) {
+      state = state.copyWith(
+        errorMessage: 'Erro ao contar jogadores: ${e.toString()}',
+      );
+      return 0;
+    }
+  }
+  
+  // Obter estatísticas de um jogador
+  Future<Map<String, dynamic>> getPlayerStatistics(String playerId) async {
+    try {
+      return await SupabaseService.getPlayerStatistics(playerId);
+    } catch (e) {
+      state = state.copyWith(
+        errorMessage: 'Erro ao obter estatísticas do jogador: ${e.toString()}',
+      );
+      return {
+        'games_played': 0,
+        'profit_loss': 0.0,
+        'win_rate': 0.0,
+      };
+    }
+  }
 }
 
 // Provider para acessar o estado dos jogadores
-final playersProvider = StateNotifierProvider<PlayersNotifier, PlayersState>((ref) {
-  return PlayersNotifier();
+final playerProvider = StateNotifierProvider<PlayerProvider, PlayerState>((ref) {
+  return PlayerProvider();
 });
