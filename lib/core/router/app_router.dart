@@ -10,6 +10,12 @@ import 'package:poker_night/features/games/presentation/screens/games_list_scree
 import 'package:poker_night/features/games/presentation/screens/new_game_screen.dart';
 import 'package:poker_night/features/players/presentation/screens/player_details_screen.dart';
 import 'package:poker_night/features/players/presentation/screens/players_list_screen.dart';
+import 'package:poker_night/screens/deep_link_test_screen.dart';
+import 'package:poker_night/screens/notification_test_screen.dart';
+import 'package:poker_night/screens/notifications_screen.dart';
+import 'package:poker_night/screens/profile_screen.dart';
+import 'package:poker_night/screens/settings/settings_screen.dart';
+import 'package:poker_night/screens/settings/language_settings_screen.dart';
 
 /// Provider for the app router
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -77,6 +83,38 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           final playerId = state.pathParameters['id']!;
           return PlayerDetailsScreen(playerId: playerId);
         },
+      ),
+      
+      // Notification routes
+      GoRoute(
+        path: '/notifications',
+        builder: (context, state) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        path: '/notifications/test',
+        builder: (context, state) => const NotificationTestScreen(),
+      ),
+      
+      // Profile route
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const ProfileScreen(),
+      ),
+      
+      // Deep Link Test route
+      GoRoute(
+        path: '/deep-link-test',
+        builder: (context, state) => const DeepLinkTestScreen(),
+      ),
+      
+      // Settings routes
+      GoRoute(
+        path: '/settings',
+        builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: '/settings/language',
+        builder: (context, state) => const LanguageSettingsScreen(),
       ),
     ],
     errorBuilder: (context, state) => Scaffold(

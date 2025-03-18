@@ -54,7 +54,7 @@ Poker Night é um aplicativo multiplataforma para gerenciar suas noites de poker
 
 1. Clone o repositório
    ```
-   git clone https://github.com/seu-usuario/poker-night-flutter.git
+   git clone https://github.com/duprota/poker-night-flutter.git
    ```
 
 2. Instale as dependências
